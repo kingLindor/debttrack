@@ -1,3 +1,27 @@
+import json
+from pathlib import Path
+DATA_DIR = Path("data")
+DATA_FILE = DATA_DIR / "debt.json"
+
+def save_debts(debts):
+    DATA_DIR.mkdir(exist_ok=True)
+
+    with DATA_FILE.open("w", encoding="utf-8") as file:
+        json.dump(debts, file, indent=4)
+
+def load_debts():
+    if not DATA_FILE.exists():
+        return []
+
+    try:
+        with DATA_FILE.open("r", encoding="utf-8") as file:
+            return json.load(file)
+
+    except json.JSONDecodeError:
+        print("Warning: Saved debt data could not be read.")
+        return []
+
+    
 def display_header():
     print("===================")
     print("    DEBTTRACK")
@@ -148,7 +172,10 @@ def display_portfolio_summary(debts):
 def main():
     display_header()
 
-    debts = []
+    debts = load_debts()
+    if debts:
+        print(f"\nLoaded {len(debts)} saved debt(s).")
+        
     while True:
 
         creditor_name, debt_name, balance, interest_rate, monthly_payment = (
@@ -178,6 +205,7 @@ def main():
             }
 
             debts.append(debt)
+            save_debts(debts)
 
             display_summary(
                 creditor_name,

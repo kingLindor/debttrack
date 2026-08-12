@@ -1,0 +1,58 @@
+[
+    {
+        "creditor": "Standard Bank",
+        "debt_name": "Credit Card",
+        "balance": 60000.0,
+        "interest_rate": 14.0,
+        "monthly_payment": 2300.0,
+        "result": [
+            27600.0,
+            2,
+            8,
+            11963.493863205294,
+            71963.4938632053
+        ]
+    },
+    {
+        "creditor": "Standard Bank",
+        "debt_name": "Overdraft",
+        "balance": 33000.0,
+        "interest_rate": 14.0,
+        "monthly_payment": 1800.0,
+        "result": [
+            21600.0,
+            1,
+            9,
+            4348.097132594173,
+            37348.09713259417
+        ]
+    },
+    {
+        "creditor": "Student Loan",
+        "debt_name": "Student Loan",
+        "balance": 99000.0,
+        "interest_rate": 14.0,
+        "monthly_payment": 2500.0,
+        "result": [
+            30000.0,
+            4,
+            6,
+            34611.96308499464,
+            133611.96308499464
+        ]
+    },
+    {
+        "creditor": "Standard Bank",
+        "debt_name": "Credit Card",
+        "balance": 60000.0,
+        "interest_rate": 15.0,
+        "monthly_payment": 2300.0,
+        "result": [
+            27600.0,
+            2,
+            8,
+            13071.816934241398,
+            73071.8169342414
+        ]
+    }
+]
