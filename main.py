@@ -82,24 +82,121 @@ def display_summary(
     print(f"Estimated Interest Paid: R{total_interest:,.2f}")
     print(f"Estimated Total Paid: R{total_paid:,.2f}")
 
+def display_portfolio_summary(debts):
+    total_debt = 0
+    total_monthly_payments = 0
+    total_interest = 0
+    total_paid = 0
+
+    for debt in debts:
+        total_debt += debt["balance"]
+        total_monthly_payments += debt["monthly_payment"]
+
+
+        (
+            annual_payment,
+            years,
+            remaining_months,
+            debt_interests,
+            debt_total_paid,
+        ) = debt["result"]
+
+        total_interest += debt_interests
+        total_paid += debt_total_paid
+
+    highest_interest_debt = max(
+        debts,
+        key=lambda debt: debt["interest_rate"]
+    )
+
+    largest_debt = max(
+        debts,
+        key=lambda debt: debt["balance"]
+    )
+
+    print("\n================DEBT PORTFOLIO================")
+    print(f"Number of Debts: {len(debts)}")
+    print(f"Total Debt: R{total_debt:,.2f}")
+    print(f"Total Monthly Payments: R{total_monthly_payments:,.2f}")
+    print(f"Estimated Total Interest: R{total_interest:,.2f}")
+    print(f"Estimated Total Repayment: R{total_paid:,.2f}")
+
+    print("n\--- Portfolio Insights ---")
+
+    print(
+        f"Highest Interest Debt: "
+        f"{highest_interest_debt['debt_name']}"
+        f"({highest_interest_debt['interest_rate']}%)"
+    )
+
+    print(
+        f"largest Debt: "
+        f"{largest_debt['debt_name']}"
+        f"(R{largest_debt['balance']:,.2f})"
+
+    )
+
+    print("\n--- Debts ---")
+
+    for index, debt in enumerate(debts, start=1):
+        print(
+            f"{index}. {debt['creditor']} - "
+            f"{debt['debt_name']} - "
+            f"R{debt['balance']:,.2f}"
+        )
 
 def main():
     display_header()
 
-    creditor_name, debt_name, balance, interest_rate, monthly_payment = get_debt_details()
+    debts = []
+    while True:
 
-    result, error = calculate_payoff(
-        balance, 
-        interest_rate,
-        monthly_payment
+        creditor_name, debt_name, balance, interest_rate, monthly_payment = (
+            get_debt_details()
+        )
 
-    )
+        result, error = calculate_payoff(
+            balance, 
+            interest_rate,
+            monthly_payment
 
-    if error:
-        print(error)
-        return 
+        )
 
-    print("Payment is sufficient to reduce the debt.")
+        if error:
+            print(error)
+
+        else: 
+            print("Payment is sufficient to reduce the debt.")
+
+            debt = {
+                "creditor": creditor_name,
+                "debt_name": debt_name,
+                "balance": balance,
+                "interest_rate": interest_rate,
+                "monthly_payment": monthly_payment,
+                "result": result
+            }
+
+            debts.append(debt)
+
+            display_summary(
+                creditor_name,
+                debt_name,
+                balance,
+                interest_rate,
+                monthly_payment,
+                result,
+            )
+
+        add_another = input("n\Add another debt? (y/n): ").strip().lower()
+
+        if add_another != "y":
+            break
+
+
+    if debts:
+        display_portfolio_summary(debts)
+
 
 if __name__ == "__main__":
     main()
