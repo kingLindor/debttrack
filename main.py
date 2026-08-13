@@ -169,30 +169,86 @@ def display_portfolio_summary(debts):
             f"R{debt['balance']:,.2f}"
         )
 
+
+def display_menu():
+    print("\n========== DEBTRACK MENU ===========")
+    print("1. View debt portfolio")
+    print("2. Add a debt")
+    print("3. Remove a debt")
+    print("4. Exit")
+
+    return input("\nChoose an option: ").strip()
+
+def remove_debt(debts):
+    if not debts:
+        print("\nNo debts available to remove.")
+        return
+
+    print("\n--- Select Debt to Remove ---")
+
+    for index, debt in enumerate(debts, start=1):
+        print(
+            f"{index}. {debt['creditor']} - "
+            f"{debt['debt_name']} - "
+            f"R{debt['balance']:,.2f}"
+        )
+
+    try:
+        choice = int(input("\nEnter debt number to remove: "))
+    except ValueError:
+        print("\nInvalid input. Please eneter a number.")
+        return 
+
+    if choice < 1 or choice > len(debts):
+        print("\nInvalid debt number.")
+        return
+
+    remove_debt = debts.pop(choice -1)
+
+    save_debts(debts)
+
+    print(
+        f"\nRemoved: {remove_debt['creditor']} - "
+        f"{remove_debt['debt_name']}"
+    )
+
+
 def main():
     display_header()
 
     debts = load_debts()
+
     if debts:
         print(f"\nLoaded {len(debts)} saved debt(s).")
-        
+
     while True:
 
-        creditor_name, debt_name, balance, interest_rate, monthly_payment = (
-            get_debt_details()
-        )
+        choice = display_menu()
 
-        result, error = calculate_payoff(
-            balance, 
-            interest_rate,
-            monthly_payment
+        if choice == "1":
+            if debts:
+                display_portfolio_summary(debts)
+            else: 
+                print("\nNo debts have been added yet.")
 
-        )
+        elif choice == "2":
 
-        if error:
-            print(error)
 
-        else: 
+            creditor_name, debt_name, balance, interest_rate, monthly_payment = (
+                get_debt_details()
+            )
+
+            result, error = calculate_payoff(
+                balance, 
+                interest_rate,
+                monthly_payment
+
+            )
+
+            if error:
+                print(error)
+                continue
+
             print("Payment is sufficient to reduce the debt.")
 
             debt = {
@@ -207,6 +263,8 @@ def main():
             debts.append(debt)
             save_debts(debts)
 
+            print("\nDebt added successfully.")
+
             display_summary(
                 creditor_name,
                 debt_name,
@@ -215,15 +273,15 @@ def main():
                 monthly_payment,
                 result,
             )
+        elif choice == "3":
+            remove_debt(debts)
 
-        add_another = input("n\Add another debt? (y/n): ").strip().lower()
-
-        if add_another != "y":
+        elif choice == "4":
+            print("\nThank you for using DebtTrack")
             break
 
-
-    if debts:
-        display_portfolio_summary(debts)
+        else: 
+            print("\nInvalid option. Please choose 1, 2, 3, or 4.")
 
 
 if __name__ == "__main__":
